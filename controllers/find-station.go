@@ -3,6 +3,7 @@ package controllers
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io"
 	"net/http"
 	"strings"
@@ -43,6 +44,9 @@ func FindStationByName(name string) (dtos.Station, error) {
 	defer resp.Body.Close()
 
 	body, err := io.ReadAll(resp.Body)
+
+	fmt.Println("DEBUG STATUS:", resp.StatusCode)
+	fmt.Println("DEBUG BODY:", string(body))
 	if err != nil {
 		return dtos.Station{}, err
 	}
