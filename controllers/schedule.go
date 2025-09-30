@@ -39,6 +39,9 @@ func GetSchedule(stationID, timeFrom, timeTo string) ([]dtos.Schedule, error) {
 	req.Header.Set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64)")
 	req.Header.Set("Accept", "application/json, text/plain, */*")
 	req.Header.Set("Authorization", "Bearer "+token)
+	req.Header.Set("Host", "api-partner.krl.co.id")
+	req.Header.Set("Origin", "https://commuterline.id")
+	req.Header.Set("Referer", "https://commuterline.id/")
 
 	resp, err := client.Do(req)
 	if err != nil {

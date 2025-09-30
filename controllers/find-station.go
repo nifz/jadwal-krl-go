@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/nifz/jadwal-krl-go/dtos"
+	"github.com/nifz/jadwal-krl-go/utils"
 )
 
 func FindStationByName(name string) (dtos.Station, error) {
@@ -17,8 +18,25 @@ func FindStationByName(name string) (dtos.Station, error) {
 		return dtos.Station{}, errors.New("input station name is empty")
 	}
 
-	// Fetch API eksternal
-	resp, err := http.Get("https://api-partner.krl.co.id/krl-webs/v1/krl-station")
+	client := &http.Client{}
+	req, err := http.NewRequest("GET", "https://api-partner.krl.co.id/krl-webs/v1/krl-station", nil)
+	if err != nil {
+		return dtos.Station{}, err
+	}
+
+	token, err := utils.Token()
+	if err != nil {
+		return dtos.Station{}, err
+	}
+
+	req.Header.Set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64)")
+	req.Header.Set("Accept", "application/json, text/plain, */*")
+	req.Header.Set("Authorization", "Bearer "+token)
+	req.Header.Set("Host", "api-partner.krl.co.id")
+	req.Header.Set("Origin", "https://commuterline.id")
+	req.Header.Set("Referer", "https://commuterline.id/")
+
+	resp, err := client.Do(req)
 	if err != nil {
 		return dtos.Station{}, err
 	}
