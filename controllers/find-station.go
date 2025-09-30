@@ -3,8 +3,8 @@ package controllers
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"strings"
 
@@ -45,8 +45,8 @@ func FindStationByName(name string) (dtos.Station, error) {
 
 	body, err := io.ReadAll(resp.Body)
 
-	fmt.Println("DEBUG STATUS:", resp.StatusCode)
-	fmt.Println("DEBUG BODY:", string(body))
+	log.Println("DEBUG STATUS:", resp.StatusCode)
+	log.Println("DEBUG BODY:", string(body))
 	if err != nil {
 		return dtos.Station{}, err
 	}
