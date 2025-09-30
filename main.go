@@ -32,7 +32,8 @@ func getJadwalHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Keberangkatan: %s (%s)\n", startStation.StaName, startStation.StaID)
 	fmt.Fprintf(w, "Tujuan: %s (%s)\n", endStation.StaName, endStation.StaID)
 
-	now := time.Now()
+	jakarta, _ := time.LoadLocation("Asia/Jakarta")
+	now := time.Now().In(jakarta)
 	timeFrom := now.Format("15:04")
 	timeTo := now.Add(2 * time.Hour).Format("15:04")
 
@@ -67,7 +68,7 @@ func getJadwalHandler(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 		if hasStart && hasEnd {
-			nowStr := time.Now().Format("15:04:05")
+			nowStr := now.Format("15:04:05")
 			waitEst, _ := utils.DurationUntil(nowStr, startTime)
 			fmt.Fprintf(w, "Estimasi waktu tunggu: %s\n", waitEst)
 			est, _ := utils.DurationString(startTime, endTime)
