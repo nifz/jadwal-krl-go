@@ -40,17 +40,21 @@ func FindStationByName(name string) (dtos.Station, error) {
 
 	resp, err := client.Do(req)
 	if err != nil {
+		log.Println("ERROR client.Do:", err)
 		return dtos.Station{}, err
 	}
 	defer resp.Body.Close()
 
-	body, err := io.ReadAll(resp.Body)
-
 	log.Println("DEBUG STATUS:", resp.StatusCode)
-	log.Println("DEBUG BODY:", string(body))
+
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
+		log.Println("ERROR io.ReadAll:", err)
 		return dtos.Station{}, err
 	}
+
+	log.Println("DEBUG BODY:", string(body))
+
 
 	var result dtos.KrlResponse
 	if err := json.Unmarshal(body, &result); err != nil {
