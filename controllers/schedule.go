@@ -4,9 +4,8 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io"
-	"net/http"
 
+	"github.com/go-resty/resty/v2"
 	"github.com/nifz/jadwal-krl-go/dtos"
 	"github.com/nifz/jadwal-krl-go/utils"
 )
@@ -25,40 +24,30 @@ func GetSchedule(stationID, timeFrom, timeTo string) ([]dtos.Schedule, error) {
 		stationID, timeFrom, timeTo,
 	)
 
-	client := &http.Client{}
-	req, err := http.NewRequest("GET", url, nil)
-	if err != nil {
-		return nil, err
-	}
-
 	token, err := utils.Token()
 	if err != nil {
 		return nil, err
 	}
-	
-	req.Header.Set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64)")
-	req.Header.Set("Accept", "application/json, text/plain, */*")
-	req.Header.Set("Authorization", "Bearer "+token)
-	req.Header.Set("Host", "api-partner.krl.co.id")
-	req.Header.Set("Origin", "https://commuterline.id")
-	req.Header.Set("Referer", "https://commuterline.id/")
 
-	resp, err := client.Do(req)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
+	client := resty.New()
+	resp, err := client.R().
+		SetHeader("User-Agent", "Mozilla/5.0").
+		SetHeader("Accept", "application/json, text/plain, */*").
+		SetHeader("Authorization", "Bearer "+token).
+		SetHeader("Origin", "https://commuterline.id").
+		SetHeader("Referer", "https://commuterline.id/").
+		Get(url)
 
-	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return nil, err
 	}
 
-	// Debug kalau perlu
-	// fmt.Println("RAW RESPONSE:", string(body))
+	if resp.StatusCode() != 200 {
+		return nil, fmt.Errorf("API error: %s", resp.Status())
+	}
 
 	var result dtos.ScheduleResponse
-	if err := json.Unmarshal(body, &result); err != nil {
+	if err := json.Unmarshal(resp.Body(), &result); err != nil {
 		return nil, err
 	}
 
