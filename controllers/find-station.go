@@ -13,6 +13,7 @@ import (
 )
 
 func FindStationByName(name string) (dtos.Station, error) {
+	log.Println("FindStationByName called with name:", name)
 	// Normalisasi input
 	nameNorm := strings.ToUpper(name)
 	if nameNorm == "" {
