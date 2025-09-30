@@ -13,7 +13,7 @@ import (
 func getJadwalHandler(w http.ResponseWriter, r *http.Request) {
 	start := r.URL.Query().Get("from")
 	end := r.URL.Query().Get("to")
-	log.Println("Handler /jadwal-krl dipanggil, from=", start, "to=", end)
+	log.Println("Handler /jadwal-krl?from=",start,"&to=",end)
 
 	if start == "" || end == "" {
 		http.Error(w, "Parameter 'from' dan 'to' wajib diisi", http.StatusBadRequest)

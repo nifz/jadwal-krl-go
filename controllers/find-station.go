@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"errors"
 	"io"
-	"log"
 	"net/http"
 	"strings"
 
@@ -13,7 +12,6 @@ import (
 )
 
 func FindStationByName(name string) (dtos.Station, error) {
-	log.Println("FindStationByName called with name:", name)
 	// Normalisasi input
 	nameNorm := strings.ToUpper(name)
 	if nameNorm == "" {
@@ -34,26 +32,20 @@ func FindStationByName(name string) (dtos.Station, error) {
 	req.Header.Set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64)")
 	req.Header.Set("Accept", "application/json, text/plain, */*")
 	req.Header.Set("Authorization", "Bearer "+token)
+	req.Header.Set("Host", "api-partner.krl.co.id")
 	req.Header.Set("Origin", "https://commuterline.id")
 	req.Header.Set("Referer", "https://commuterline.id/")
 
 	resp, err := client.Do(req)
 	if err != nil {
-		log.Println("ERROR client.Do:", err)
 		return dtos.Station{}, err
 	}
 	defer resp.Body.Close()
 
-	log.Println("DEBUG STATUS:", resp.StatusCode)
-
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		log.Println("ERROR io.ReadAll:", err)
 		return dtos.Station{}, err
 	}
-
-	log.Println("DEBUG BODY:", string(body))
-
 
 	var result dtos.KrlResponse
 	if err := json.Unmarshal(body, &result); err != nil {
