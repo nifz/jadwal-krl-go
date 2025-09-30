@@ -18,16 +18,16 @@ func getJadwalHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	startStation, err := controllers.FindStationByName(start)
-	if err != nil || startStation.StaID == "" {
-		http.Error(w, "Stasiun keberangkatan tidak ditemukan", http.StatusNotFound)
-		return
-	}
-	endStation, err := controllers.FindStationByName(end)
-	if err != nil || endStation.StaID == "" {
-		http.Error(w, "Stasiun tujuan tidak ditemukan", http.StatusNotFound)
-		return
-	}
+	startStation, _ := controllers.FindStationByName(start)
+	// if err != nil || startStation.StaID == "" {
+	// 	http.Error(w, "Stasiun keberangkatan tidak ditemukan", http.StatusNotFound)
+	// 	return
+	// }
+	endStation, _ := controllers.FindStationByName(end)
+	// if err != nil || endStation.StaID == "" {
+	// 	http.Error(w, "Stasiun tujuan tidak ditemukan", http.StatusNotFound)
+	// 	return
+	// }
 
 	fmt.Fprintf(w, "Keberangkatan: %s (%s)\n", startStation.StaName, startStation.StaID)
 	fmt.Fprintf(w, "Tujuan: %s (%s)\n", endStation.StaName, endStation.StaID)
