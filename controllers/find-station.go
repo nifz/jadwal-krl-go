@@ -12,7 +12,7 @@ import (
 )
 
 func FindStationByName(name string) (dtos.Station, error) {
-	nameNorm := strings.ToUpper(strings.TrimSpace(name))
+	nameNorm := strings.ToUpper(strings.ReplaceAll(strings.TrimSpace(name), " ", ""))
 	if nameNorm == "" {
 		return dtos.Station{}, errors.New("input station name is empty")
 	}
@@ -46,7 +46,7 @@ func FindStationByName(name string) (dtos.Station, error) {
 	}
 
 	for _, s := range result.Data {
-		if strings.ToUpper(s.StaName) == nameNorm {
+		if strings.ToUpper(strings.ReplaceAll(strings.TrimSpace(s.StaName), " ", "")) == nameNorm {
 			return s, nil
 		}
 	}
