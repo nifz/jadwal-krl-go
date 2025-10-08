@@ -69,6 +69,9 @@ func getJadwalHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		if hasStart && hasEnd {
 			nowStr := now.Format("15:04:05")
+			if (startTime < nowStr) {
+				continue
+			}
 			waitEst, _ := utils.DurationUntil(nowStr, startTime)
 			fmt.Fprintf(w, "Estimasi waktu tunggu: %s\n", waitEst)
 			est, _ := utils.DurationString(startTime, endTime)
