@@ -16,7 +16,7 @@ func GetScheduleTrain(trainID string) ([]dtos.ScheduleTrain, error) {
 		return nil, errors.New("trainID is required")
 	}
 
-	url := fmt.Sprintf("https://api-partner.krl.co.id/krl-webs/v1/schedule-train?trainid=%s", trainID)
+	url := fmt.Sprintf("https://api-partner.krl.co.id/krl-webs/v1/schedules-train?trainid=%s", trainID)
 
 	token, err := utils.Token()
 	if err != nil {

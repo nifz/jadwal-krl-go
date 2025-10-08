@@ -20,7 +20,7 @@ func GetSchedule(stationID, timeFrom, timeTo string) ([]dtos.Schedule, error) {
 	}
 
 	url := fmt.Sprintf(
-		"https://api-partner.krl.co.id/krl-webs/v1/schedule?stationid=%s&timefrom=%s&timeto=%s",
+		"https://api-partner.krl.co.id/krl-webs/v1/schedules?stationid=%s&timefrom=%s&timeto=%s",
 		stationID, timeFrom, timeTo,
 	)
 
