@@ -14,6 +14,8 @@ import (
 func getJadwalHandler(w http.ResponseWriter, r *http.Request) {
 	start := r.URL.Query().Get("from")
 	end := r.URL.Query().Get("to")
+	hourStart := r.URL.Query().Get("hourStart")
+	hourEnd := r.URL.Query().Get("hourEnd")
 
 	if start == "" || end == "" {
 		http.Error(w, "Parameter 'from' dan 'to' wajib diisi", http.StatusBadRequest)
@@ -36,13 +38,24 @@ func getJadwalHandler(w http.ResponseWriter, r *http.Request) {
 
 	jakarta, _ := time.LoadLocation("Asia/Jakarta")
 	now := time.Now().In(jakarta)
+	if hourStart != "" {
+		now, _ = time.ParseInLocation("15:04", hourStart, jakarta)
+	}
 	timeFrom := now.Format("15:04")
-	timeTo := now.Add(2 * time.Hour).Format("15:04")
+	parsedTimeFrom, _ := time.ParseInLocation("15:04", timeFrom, jakarta)
+	timeTo := parsedTimeFrom.Add(2 * time.Hour)
+	if hourEnd != "" {
+		timeTo, _ = time.ParseInLocation("15:04", hourEnd, jakarta)
+	}
+	limitTime, _ := time.ParseInLocation("15:04", "23:59", jakarta)
+	if timeTo.After(limitTime) {
+		timeTo = limitTime
+	}
 
-	fmt.Fprintf(w, "Mengambil jadwal dari %s sampai %s\n", timeFrom, timeTo)
+	fmt.Fprintf(w, "Mengambil jadwal dari %s sampai %s\n", timeFrom, timeTo.Format("15:04"))
 	fmt.Fprintln(w, "----------------------------------------")
 
-	schedules, err := controllers.GetSchedule(startStation.StaID, timeFrom, timeTo)
+	schedules, err := controllers.GetSchedule(startStation.StaID, timeFrom, timeTo.Format("15:04"))
 	if err != nil {
 		http.Error(w, "Gagal ambil jadwal", http.StatusInternalServerError)
 		return
