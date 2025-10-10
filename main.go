@@ -3,8 +3,10 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"os"
 	"time"
 
+	"github.com/joho/godotenv"
 	"github.com/nifz/jadwal-krl-go/controllers"
 	"github.com/nifz/jadwal-krl-go/utils"
 )
@@ -96,8 +98,14 @@ func getJadwalHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	err := godotenv.Load()
+	if err != nil {
+		fmt.Println("Error loading .env file")
+	}
+
+	port := os.Getenv("port")
 	http.HandleFunc("/jadwal-krl", getJadwalHandler)
 
-	fmt.Println("Server running at :8080")
-	http.ListenAndServe(":8080", nil)
+	fmt.Println("Server running at :" + port)
+	http.ListenAndServe(":"+port, nil)
 }
